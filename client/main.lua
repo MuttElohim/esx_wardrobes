@@ -55,7 +55,7 @@ function OpenWardrobe(selector, data, origin, confirm, cancel, closed)
 			ESX.CloseContext()
 		end, function()
 			if not confirmed and cancel then cancel() end
-			OpenWardrobe(origin, data)
+			if not closed or not confirmed then OpenWardrobe(origin, data) end
 		end)
 	elseif selector == 'outfit' then
 		local elements = {
@@ -111,25 +111,27 @@ function OpenWardrobe(selector, data, origin, confirm, cancel, closed)
 			end
 
 			elements[#elements + 1] = {value = 'delete', title = TranslateCap('title_deleteoutfits'), icon = "fas fa-trash"}
-			elements[#elements + 1] = {value = 'save', title = 'title_saveoutfit', icon = "fas fa-plus"}
+			elements[#elements + 1] = {value = 'save', title = TranslateCap('title_saveoutfit'), icon = "fas fa-plus"}
 
 			ESX.OpenContext("left", elements, function(menu, element)
 				if element.value == 'delete' then
-					if #dressing == 0 then OpenWardrobe('confirm', data, selector, function() ESX.TriggerServerCallback('esx_wardrobes:delPlayerOutfits', function() ESX.ShowNotification('notify_deletedoutfits', 2000, "success") end) end) else ESX.ShowNotification(TranslateCap('notify_nothingtoshow'), 2000, "error") end
+					if #dressing > 0 then OpenWardrobe('confirm', data, selector, function() ESX.TriggerServerCallback('esx_wardrobes:delPlayerOutfits', function() ESX.ShowNotification(TranslateCap('notify_deletedoutfits'), 2000, "success") end) end) else ESX.ShowNotification(TranslateCap('notify_nothingtoshow'), 2000, "error") end
 				elseif element.value == 'save' then
 					OpenWardrobe('confirm', data, selector, function()
 						ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'outfit_name', {
-							title = 'name_outfit'
+							title = TranslateCap('dialog_nameoutfit')
 						}, function(data3, menu3)
 							menu3.close()
 							TriggerEvent('skinchanger:getSkin', function(skin)
-								TriggerServerEvent('esx_clotheshop:saveOutfit', data3.value, skin)
-								ESX.ShowNotification('saved_outfit')
+								TriggerServerEvent('esx_wardrobes:saveOutfit', data3.value, skin)
+								ESX.ShowNotification(TranslateCap('notify_savedoutfit'), 2000, "success")
+								OpenWardrobe()
 							end)
 						end, function(data3, menu3)
 							menu3.close()
+							OpenWardrobe()
 						end)
-					end)
+					end, function() ESX.CloseContext() end, true)
 				else
 					OpenWardrobe('outfit', {element.value, element.title})
 				end

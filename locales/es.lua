@@ -24,6 +24,9 @@ Locales['es'] = {
   ['notify_deletedoutfit'] = 'Outfit Eliminado',
   ['notify_deletedoutfits'] = 'Se han eliminado todos los outfits',
   ['notify_dressedoutfit'] = 'Outfit Cargado',
+  ['title_saveoutfit'] = 'Guardar Outfit',
+  ['dialog_nameoutfit'] = 'Nombra tu Outfit',
+  ['notify_savedoutfit'] = 'Outfit Guradado',
  
   ['confirm'] = 'confirmar',
   ['yes'] = 'sí',

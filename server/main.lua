@@ -73,7 +73,7 @@ ESX.RegisterServerCallback('esx_wardrobes:delPlayerOutfit', function(source, cb,
 		
 		local dressing = store.get('dressing')
 
-		for i, v in pairs(dressing) do print(v.label) if outfit.label == v.label then table.remove(dressing, i) break end end
+		for i, v in pairs(dressing) do if outfit.label == v.label then table.remove(dressing, i) break end end
 		
 		store.set('dressing', dressing)
 		store.save()
@@ -89,6 +89,27 @@ ESX.RegisterServerCallback('esx_wardrobes:delPlayerOutfits', function(source, cb
 		store.set('dressing', {})
 		store.save()
 		cb()
+	end)
+end)
+
+RegisterServerEvent('esx_wardrobes:saveOutfit') -- 'esx_clotheshop:saveOutfit
+AddEventHandler('esx_wardrobes:saveOutfit', function(label, skin)
+	local xPlayer = ESX.GetPlayerFromId(source)
+
+	TriggerEvent('esx_datastore:getDataStore', 'property', xPlayer.identifier, function(store)
+		local dressing = store.get('dressing')
+
+		if dressing == nil then
+			dressing = {}
+		end
+
+		table.insert(dressing, {
+			label = label,
+			skin  = skin
+		})
+
+		store.set('dressing', dressing)
+		store.save()
 	end)
 end)
 

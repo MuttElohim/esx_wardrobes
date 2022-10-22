@@ -24,6 +24,9 @@ Locales['en'] = {
   ['notify_deletedoutfit'] = 'Outfit Deleted',
   ['notify_deletedoutfits'] = 'All Outfits Deleted',
   ['notify_dressedoutfit'] = 'Outfit Dressed',
+  ['title_saveoutfit'] = 'Save Outfit',
+  ['dialog_nameoutfit'] = 'Name your Outfit',
+  ['notify_savedoutfit'] = 'Outfit Saved',
   
   ['confirm'] = 'confirm',
   ['yes'] = 'yes',
