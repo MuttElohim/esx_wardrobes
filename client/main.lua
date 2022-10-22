@@ -99,7 +99,6 @@ function OpenWardrobe(selector, data, origin, confirm, cancel, closed)
 		end)
 	else
 		ESX.TriggerServerCallback('esx_wardrobes:getPlayerDressing', function(dressing)
-			if #dressing == 0 then return ESX.ShowNotification(TranslateCap('notify_nothingtoshow'), 2000, "info") end
 			
 			local elements = {{unselectable = true, icon = "fas fa-box-archive", title = TranslateCap('wardrobe')}}
 
@@ -112,10 +111,25 @@ function OpenWardrobe(selector, data, origin, confirm, cancel, closed)
 			end
 
 			elements[#elements + 1] = {value = 'delete', title = TranslateCap('title_deleteoutfits'), icon = "fas fa-trash"}
+			elements[#elements + 1] = {value = 'save', title = 'title_saveoutfit', icon = "fas fa-plus"}
 
 			ESX.OpenContext("left", elements, function(menu, element)
 				if element.value == 'delete' then
-					OpenWardrobe('confirm', data, selector, function() ESX.TriggerServerCallback('esx_wardrobes:delPlayerOutfits', function() ESX.ShowNotification(TranslateCap('notify_deletedoutfits'), 2000, "success") end) end)
+					if #dressing == 0 then OpenWardrobe('confirm', data, selector, function() ESX.TriggerServerCallback('esx_wardrobes:delPlayerOutfits', function() ESX.ShowNotification('notify_deletedoutfits', 2000, "success") end) end) else ESX.ShowNotification(TranslateCap('notify_nothingtoshow'), 2000, "error") end
+				elseif element.value == 'save' then
+					OpenWardrobe('confirm', data, selector, function()
+						ESX.UI.Menu.Open('dialog', GetCurrentResourceName(), 'outfit_name', {
+							title = 'name_outfit'
+						}, function(data3, menu3)
+							menu3.close()
+							TriggerEvent('skinchanger:getSkin', function(skin)
+								TriggerServerEvent('esx_clotheshop:saveOutfit', data3.value, skin)
+								ESX.ShowNotification('saved_outfit')
+							end)
+						end, function(data3, menu3)
+							menu3.close()
+						end)
+					end)
 				else
 					OpenWardrobe('outfit', {element.value, element.title})
 				end
